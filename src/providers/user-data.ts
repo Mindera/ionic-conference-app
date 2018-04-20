@@ -2,18 +2,19 @@ import { Injectable } from '@angular/core';
 
 import { Events } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
-
+import { Http, Headers, RequestOptions } from '@angular/http';
+import 'rxjs/add/operator/map';
 
 @Injectable()
 export class UserData {
   _favorites: string[] = [];
-  HAS_LOGGED_IN = 'hasLoggedIn';
   HAS_SEEN_TUTORIAL = 'hasSeenTutorial';
 
   constructor(
     public events: Events,
-    public storage: Storage
-  ) {}
+    public storage: Storage,
+    public http: Http
+  ) { }
 
   hasFavorite(sessionName: string): boolean {
     return (this._favorites.indexOf(sessionName) > -1);
@@ -30,22 +31,54 @@ export class UserData {
     }
   };
 
-  login(username: string): void {
-    this.storage.set(this.HAS_LOGGED_IN, true);
-    this.setUsername(username);
-    this.events.publish('user:login');
+  login(email: string, password): any {
+    let headers = new Headers();
+    headers.append("Accept", 'application/json');
+    headers.append('Content-Type', 'application/json' );
+    let options = new RequestOptions({ headers: headers, withCredentials: true });
+
+    return this.http.post(API_URL + '/api/auth/login', {
+        email: email,
+        password: password
+    }, options).toPromise()
+    .then(res => {
+      this.setUsername(email);
+      this.events.publish('user:login');
+     });
   };
 
-  signup(username: string): void {
-    this.storage.set(this.HAS_LOGGED_IN, true);
-    this.setUsername(username);
-    this.events.publish('user:signup');
+  signup(first_name: string,
+    last_name: string,
+    twitter_handle: string,
+    email: string,
+    password: string): any {
+      let headers = new Headers();
+      headers.append("Accept", 'application/json');
+      headers.append('Content-Type', 'application/json' );
+      let options = new RequestOptions({ headers: headers, withCredentials: true });
+
+      return this.http.post(API_URL + '/api/user', {
+          first_name: first_name,
+          last_name: last_name,
+          twitter_handle: twitter_handle,
+          email: email,
+          password: password
+      }, options).toPromise()
+      .then(res => {
+        this.setUsername(email);
+        this.events.publish('user:signup');
+       });
   };
 
   logout(): void {
-    this.storage.remove(this.HAS_LOGGED_IN);
-    this.storage.remove('username');
-    this.events.publish('user:logout');
+    let options = new RequestOptions({ withCredentials: true });
+    return this.http.get(API_URL + '/api/auth/logout', options).toPromise()
+    .then(res => {
+      this.storage.remove('username');
+      this.events.publish('user:logout');
+    }).catch((err) => {
+      console.log(err);
+    });
   };
 
   setUsername(username: string): void {
@@ -59,8 +92,12 @@ export class UserData {
   };
 
   hasLoggedIn(): Promise<boolean> {
-    return this.storage.get(this.HAS_LOGGED_IN).then((value) => {
-      return value === true;
+    let options = new RequestOptions({ withCredentials: true });
+    return this.http.get(API_URL + '/api/user', options).toPromise()
+    .then(res => {
+      return true
+    }).catch(() => {
+      return false
     });
   };
 

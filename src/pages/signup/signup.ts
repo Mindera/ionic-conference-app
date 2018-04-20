@@ -15,7 +15,7 @@ import { TabsPage } from '../tabs-page/tabs-page';
   templateUrl: 'signup.html'
 })
 export class SignupPage {
-  signup: UserOptions = { username: '', password: '' };
+  signup: UserOptions = {};
   submitted = false;
 
   constructor(public navCtrl: NavController, public userData: UserData) {}
@@ -24,8 +24,18 @@ export class SignupPage {
     this.submitted = true;
 
     if (form.valid) {
-      this.userData.signup(this.signup.username);
-      this.navCtrl.push(TabsPage);
+      let promise = this.userData.signup(this.signup.first_name,
+        this.signup.last_name,
+        this.signup.twitter_handle,
+        this.signup.email,
+        this.signup.password);
+
+      promise.then((data) => {
+          this.navCtrl.push(TabsPage);
+      }).catch(err => {
+        alert('Ops');
+        console.log(err);
+      });
     }
   }
 }
