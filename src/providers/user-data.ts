@@ -41,7 +41,7 @@ export class UserData {
         email: email,
         password: password
     }, options).toPromise()
-    .then(res => {
+    .then(() => {
       this.setUsername(email);
       this.events.publish('user:login');
      });
@@ -94,7 +94,7 @@ export class UserData {
   hasLoggedIn(): Promise<boolean> {
     let options = new RequestOptions({ withCredentials: true });
     return this.http.get(API_URL + '/api/user', options).toPromise()
-    .then(res => {
+    .then(() => {
       return true
     }).catch(() => {
       return false
