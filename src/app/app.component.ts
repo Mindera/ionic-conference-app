@@ -11,10 +11,8 @@ import { LoginPage } from '../pages/login/login';
 import { MapPage } from '../pages/map/map';
 import { SignupPage } from '../pages/signup/signup';
 import { TabsPage } from '../pages/tabs-page/tabs-page';
-import { TutorialPage } from '../pages/tutorial/tutorial';
 import { SchedulePage } from '../pages/schedule/schedule';
 import { SpeakerListPage } from '../pages/speaker-list/speaker-list';
-import { SupportPage } from '../pages/support/support';
 
 import { ConferenceData } from '../providers/conference-data';
 import { UserData } from '../providers/user-data';
@@ -49,12 +47,10 @@ export class ConferenceApp {
   ];
   loggedInPages: PageInterface[] = [
     { title: 'Account', name: 'AccountPage', component: AccountPage, icon: 'person' },
-    { title: 'Support', name: 'SupportPage', component: SupportPage, icon: 'help' },
     { title: 'Logout', name: 'TabsPage', component: TabsPage, icon: 'log-out', logsOut: true }
   ];
   loggedOutPages: PageInterface[] = [
     { title: 'Login', name: 'LoginPage', component: LoginPage, icon: 'log-in' },
-    { title: 'Support', name: 'SupportPage', component: SupportPage, icon: 'help' },
     { title: 'Signup', name: 'SignupPage', component: SignupPage, icon: 'person-add' }
   ];
   rootPage: any;
@@ -70,15 +66,15 @@ export class ConferenceApp {
   ) {
 
     // Check if the user has already seen the tutorial
-    this.storage.get('hasSeenTutorial')
-      .then((hasSeenTutorial) => {
-        if (hasSeenTutorial) {
+    // this.storage.get('hasSeenTutorial')
+    //   .then((hasSeenTutorial) => {
+    //     if (hasSeenTutorial) {
           this.rootPage = TabsPage;
-        } else {
-          this.rootPage = TutorialPage;
-        }
-        this.platformReady()
-      });
+    //     } else {
+    //       this.rootPage = TutorialPage;
+    //     }
+        this.platformReady();
+      // });
 
     // load the conference data
     confData.load();
@@ -120,9 +116,9 @@ export class ConferenceApp {
     }
   }
 
-  openTutorial() {
-    this.nav.setRoot(TutorialPage);
-  }
+  // openTutorial() {
+  //   this.nav.setRoot(TutorialPage);
+  // }
 
   listenToLoginEvents() {
     this.events.subscribe('user:login', () => {

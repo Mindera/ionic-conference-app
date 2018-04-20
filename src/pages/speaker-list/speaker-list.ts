@@ -100,13 +100,6 @@ export class SpeakerListPage {
           handler: () => {
             window.open('mailto:' + speaker.email);
           }
-        } as ActionSheetButton,
-        {
-          text: `Call ( ${speaker.phone} )`,
-          icon: mode !== 'ios' ? 'call' : null,
-          handler: () => {
-            window.open('tel:' + speaker.phone);
-          }
         } as ActionSheetButton
       ]
     } as ActionSheetOptions);

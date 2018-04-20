@@ -22,7 +22,6 @@ export class MapPage {
 
       this.confData.getMap().subscribe((mapData: any) => {
         let mapEle = this.mapElement.nativeElement;
-
         let map = new google.maps.Map(mapEle, {
           center: mapData.find((d: any) => d.center),
           zoom: 16

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
-
+import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { ConferenceData } from '../../providers/conference-data';
 
 @Component({
@@ -10,8 +10,11 @@ import { ConferenceData } from '../../providers/conference-data';
 export class SpeakerDetailPage {
   speaker: any;
 
-  constructor(public dataProvider: ConferenceData, public navCtrl: NavController, public navParams: NavParams) {
-  }
+  constructor(
+    public dataProvider: ConferenceData,
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    public inAppBrowser: InAppBrowser) { }
 
   ionViewWillEnter() {
     this.dataProvider.load().subscribe((data: any) => {
@@ -26,6 +29,14 @@ export class SpeakerDetailPage {
     });
 
   }
+
+
+    goToSpeakerTwitter(speaker: any) {
+      this.inAppBrowser.create(
+        `https://twitter.com/${speaker.twitter}`,
+        '_blank'
+      );
+    }
 
   goToSessionDetail(session: any) {
     this.navCtrl.push('SessionDetailPage', { sessionId: session.id });
